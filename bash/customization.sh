@@ -8,3 +8,9 @@ curl -L https://raw.githubusercontent.com/chno-odoo/Odoo-Buffalo-Linux-/5b5cb493
 
 # Set the downloaded image as the desktop background. 
 gsettings set org.cinnamon.desktop.background picture-uri 'file://'$HOME'/odoo_logo.png'
+
+# Set the background picture options.
+gsettings set org.cinnamon.desktop.background picture-options 'centered'
+
+# Set the background primary color.
+gsettings set org.cinnamon.desktop.background primary-color '#714B67'
