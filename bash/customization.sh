@@ -8,7 +8,7 @@ curl -L https://raw.githubusercontent.com/chno-odoo/Odoo-Buffalo-Linux-/5b5cb493
 curl -L https://raw.githubusercontent.com/chno-odoo/Odoo-Buffalo-Linux-/5b5cb493fb4ab58e40ace10d1e88b0f57d2f27d7/images/odoo_logo_inverted.png -o $HOME/odoo_logo_inverted.png
 
 # Set the downloaded image as the desktop background. 
-gsettings set org.cinnamon.desktop.background picture-uri 'file://'$HOME'/odoo_logo_inverted'
+gsettings set org.cinnamon.desktop.background picture-uri 'file://'$HOME'/odoo_logo_inverted.png'
 
 # Set the background picture options.
 gsettings set org.cinnamon.desktop.background picture-options 'centered'
