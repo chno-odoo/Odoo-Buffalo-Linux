@@ -4,10 +4,8 @@
 
 #Download the raw image files
 curl -L https://raw.githubusercontent.com/chno-odoo/Odoo-Buffalo-Linux/5b5cb493fb4ab58e40ace10d1e88b0f57d2f27d7/images/odoo_logo.png -o $HOME/odoo_logo.png
-sudo curl -L https://raw.githubusercontent.com/chno-odoo/Odoo-Buffalo-Linux/5b5cb493fb4ab58e40ace10d1e88b0f57d2f27d7/images/Ologo1.png -o /usr/share/icons/Mint-L-Purple/places/48/Ologo1.png
+curl -L https://raw.githubusercontent.com/chno-odoo/Odoo-Buffalo-Linux/5b5cb493fb4ab58e40ace10d1e88b0f57d2f27d7/images/Ologo1.png -o /usr/share/icons/Mint-L-Purple/places/48/Ologo1.png
 curl -L https://raw.githubusercontent.com/chno-odoo/Odoo-Buffalo-Linux/5b5cb493fb4ab58e40ace10d1e88b0f57d2f27d7/images/odoo_logo_inverted.png -o $HOME/odoo_logo_inverted.png
-
-sudo gtk-update-icon-cache /usr/share/icons/Mint-L-Purple
 
 # Set the downloaded image as the desktop background. 
 gsettings set org.cinnamon.desktop.background picture-uri 'file://'$HOME'/odoo_logo.png'
@@ -17,9 +15,6 @@ gsettings set org.cinnamon.desktop.background picture-options 'centered'
 
 # Set the background primary color.
 gsettings set org.cinnamon.desktop.background primary-color '#FFFFFF'
-
-# Set the custom menu icon.
-gsettings set org.cinnamon app-menu-icon-name 'Ologo1'
 
 # Set the Mouse Pointer.
 gsettings set org.cinnamon.desktop.interface cursor-theme 'DMZ-White'
@@ -34,7 +29,7 @@ gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-L-Purple'
 gsettings set org.cinnamon.theme name 'Mint-L-Purple'
 
 # Pin the wanted applications to the panel.
-gsettings set org.cinnamon favorite-apps "['nemo.desktop', 'gnome.Terminal.desktop', 'google-chrome.desktop', 'discord.desktop', 'code.desktop', 'libreoffice-calc.desktop', 'libreoffice-writer.desktop', 'org.flameshot.Flameshot.desktop', 'simplescreenrecorder.desktop', 'cinnamon-settings.desktop']"
+gsettings set org.cinnamon favorite-apps "['gnome.Terminal.desktop', 'google-chrome.desktop', 'discord.desktop', 'code.desktop', 'libreoffice-calc.desktop', 'libreoffice-writer.desktop', 'org.flameshot.Flameshot.desktop', 'simplescreenrecorder.desktop', 'cinnamon-settings.desktop']"
 
 
 
