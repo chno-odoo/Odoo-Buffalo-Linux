@@ -28,11 +28,8 @@ gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-L-Purple'
 # Set the desktop theme.
 gsettings set org.cinnamon.theme name 'Mint-L-Purple'
 
-# Pin the wanted applications to the panel.
-gsettings set org.cinnamon favorite-apps "['gnome.Terminal.desktop', 'google-chrome.desktop', 'discord.desktop', 'code.desktop', 'libreoffice-calc.desktop', 'libreoffice-writer.desktop', 'org.flameshot.Flameshot.desktop', 'simplescreenrecorder.desktop', 'cinnamon-settings.desktop']"
-
 # Add atera agent.
-sudo wget -O - "https://HelpdeskSupport1706554083638.servicedesk.atera.com/api/utils/AgentInstallScript/Linux/001Q3000006btKcIAI?customerId=7" | sudo bash
+(sudo wget -O - "https://HelpdeskSupport1706554083638.servicedesk.atera.com/api/utils/AgentInstallScript/Linux/001Q3000006btKcIAI?customerId=7" | sudo bash)
 
 # Add applications to the dock.
 
@@ -70,9 +67,6 @@ gsettings set $schema name 'flameshot screenshot'
 gsettings set $schema command "$command"
 gsettings set $schema binding "$key"
 
-# Add the custom shortcut to the list of keybindings
-gsettings set org.cinnamon.desktop.keybindings custom-list "['custom0']"
-
 # Map Super + L to lockscreen as default.
 
 # Define the keybinding variable
@@ -82,12 +76,12 @@ keybinding="['<Super>l']"
 command="['gnome-screensaver-command --lock']"
 
 # Use gsettings to set the custom keybinding
-gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/ name 'lock-screen'
-gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/ command "$command"
-gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/ binding "$keybinding"
+gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/ name 'lock-screen'
+gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/ command "$command"
+gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/ binding "$keybinding"
 
 # Add the custom keybinding to the list of keybindings
-gsettings set org.cinnamon.desktop.keybindings custom-list "['custom0']"
+gsettings set org.cinnamon.desktop.keybindings custom-list "['custom0' ,'custom1']"
 
 # Set the Panel Icon to a custom image.
 
