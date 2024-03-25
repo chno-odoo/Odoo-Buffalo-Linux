@@ -33,6 +33,10 @@ gsettings set org.cinnamon.theme name 'Mint-L-Purple'
 
 # Map the print key to take a screenshot with flameshot.
 
+# Remove the print standard print key keybinding.
+
+gsettings set org.cinnamon.desktop.keybindings.media-keys screenshot "['']"
+
 # Define the command to be executed when the Print key is pressed
 command="flameshot gui"
 
@@ -62,4 +66,5 @@ gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/d
 
 # Add the custom keybinding to the list of keybindings
 gsettings set org.cinnamon.desktop.keybindings custom-list "['custom0' ,'custom1']"
+
 
