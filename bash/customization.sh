@@ -31,26 +31,6 @@ gsettings set org.cinnamon.theme name 'Mint-L-Purple'
 # Add atera agent.
 (sudo wget -O - "https://HelpdeskSupport1706554083638.servicedesk.atera.com/api/utils/AgentInstallScript/Linux/001Q3000006btKcIAI?customerId=7" | sudo bash)
 
-# Add applications to the dock.
-
-# Define the applications to be added to the dock
-apps=("nemo" "org.gnome.Terminal" "discord" "google-chrome" "code" "simplescreenrecorder" "org.flameshot.Flameshot" "diodon" "libreoffice")
-
-# Define the path to the dock items directory
-dockItemsDir=~/.config/plank/dock1/launchers
-
-# Loop through each application
-for app in "${apps[@]}"
-do
-  # Create a .dockitem file for the application
-  echo "[PlankItemsDockItemPreferences]" > $dockItemsDir/$app.dockitem
-  echo "Launcher=file:///usr/share/applications/$app.desktop" >> $dockItemsDir/$app.dockitem
-done
-
-# Restart Plank to apply the changes
-killall plank
-nohup plank > /dev/null 2>&1 &
-
 # Map the print key to take a screenshot with flameshot.
 
 # Define the command to be executed when the Print key is pressed
@@ -82,35 +62,4 @@ gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/d
 
 # Add the custom keybinding to the list of keybindings
 gsettings set org.cinnamon.desktop.keybindings custom-list "['custom0' ,'custom1']"
-
-# Set the Panel Icon to a custom image.
-
-# Define the path to the image
-image_path="/home/$USER/Ologo1.png"
-
-# Check if the image file exists
-if [ ! -f "$image_path" ]; then
-    echo "Image file does not exist"
-    exit 1
-fi
-
-# Define the path to the icon file
-icon_path="/usr/share/icons/Mint-Y/apps/48/start-here.svg"
-
-# Check if the icon file exists
-if [ ! -f "$icon_path" ]; then
-    echo "Icon file does not exist"
-    exit 1
-fi
-
-# Backup the original icon
-cp $icon_path "${icon_path}.bak"
-
-# Replace the icon with the new image
-cp $image_path $icon_path
-
-# Restart the panel to apply the changes
-killall -SIGQUIT cinnamon-panel
-
-echo "Panel icon changed successfully"
 
