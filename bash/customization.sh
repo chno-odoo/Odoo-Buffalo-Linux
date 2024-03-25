@@ -73,7 +73,7 @@ gsettings set $schema binding "$key"
 keybinding="['<Super>l']"
 
 # Define the command to lock the screen
-command="['gnome-screensaver-command --lock']"
+command="gnome-screensaver-command --lock"
 
 # Use gsettings to set the custom keybinding
 gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/ name 'lock-screen'
