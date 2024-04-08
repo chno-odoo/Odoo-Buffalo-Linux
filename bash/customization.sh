@@ -31,19 +31,8 @@ gsettings set org.cinnamon.theme name 'Mint-L-Purple'
 # Add atera agent.
 (sudo wget -O - "https://HelpdeskSupport1706554083638.servicedesk.atera.com/api/utils/AgentInstallScript/Linux/001Q3000006btKcIAI?customerId=7" | sudo bash)
 
-# Install TLP for power optimization.
-echo "Setting up TLP for power optimization..."
-if ! command -v tlp &> /dev/null; then
-    echo "TLP is not installed. Installing TLP..."
-    add-apt-repository ppa:linrunner/tlp -y
-    apt-get update
-    apt-get install tlp tlp-rdw -y
-    tlp start
-    echo "TLP installation and setup completed."
 
-else
-    echo "TLP is already installed."
-fi
+
 
 
 
