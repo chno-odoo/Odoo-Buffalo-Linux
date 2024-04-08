@@ -31,40 +31,21 @@ gsettings set org.cinnamon.theme name 'Mint-L-Purple'
 # Add atera agent.
 (sudo wget -O - "https://HelpdeskSupport1706554083638.servicedesk.atera.com/api/utils/AgentInstallScript/Linux/001Q3000006btKcIAI?customerId=7" | sudo bash)
 
-# Map the print key to take a screenshot with flameshot.
+# Install TLP for power optimization.
+echo "Setting up TLP for power optimization..."
+if ! command -v tlp &> /dev/null; then
+    echo "TLP is not installed. Installing TLP..."
+    add-apt-repository ppa:linrunner/tlp -y
+    apt-get update
+    apt-get install tlp tlp-rdw -y
+    tlp start
+    echo "TLP installation and setup completed."
 
-# Remove the print standard print key keybinding.
+else
+    echo "TLP is already installed."
+fi
 
-gsettings set org.cinnamon.desktop.keybindings.media-keys screenshot "['']"
 
-# Define the command to be executed when the Print key is pressed
-command="flameshot gui"
 
-# Define the key to be used for the screenshot (Print key is represented as "Print")
-key="Print"
-
-# Define the schema where the custom shortcut will be added
-schema="org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/"
-
-# Set the name, command and binding for the custom shortcut
-gsettings set $schema name 'flameshot screenshot'
-gsettings set $schema command "$command"
-gsettings set $schema binding "$key"
-
-# Map Super + L to lockscreen as default.
-
-# Define the keybinding variable
-keybinding="['<Super>l']"
-
-# Define the command to lock the screen
-command="gnome-screensaver-command --lock"
-
-# Use gsettings to set the custom keybinding
-gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/ name 'lock-screen'
-gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/ command "$command"
-gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/ binding "$keybinding"
-
-# Add the custom keybinding to the list of keybindings
-gsettings set org.cinnamon.desktop.keybindings custom-list "['custom0' ,'custom1']"
 
 
