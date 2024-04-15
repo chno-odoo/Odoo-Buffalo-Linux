@@ -31,5 +31,5 @@ gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-L-Purple'
 gsettings set org.cinnamon.theme name 'Mint-L-Purple'
 
 # Pin the wanted applications to the panel.
-gsettings set org.cinnamon favorite-apps "['gnome.Terminal.desktop', 'google-chrome.desktop', 'discord.desktop', 'code.desktop', 'libreoffice-calc.desktop', 'libreoffice-writer.desktop', 'org.flameshot.Flameshot.desktop', 'simplescreenrecorder.desktop', 'cinnamon-settings.desktop']"
+gsettings set org.cinnamon favorite-apps "['gnome.Terminal.desktop', 'google-chrome.desktop', 'discord.desktop', 'code.desktop', 'libreoffice-calc.desktop', 'libreoffice-writer.desktop', 'keepassx.desktop', 'spotify.desktop', 'org.flameshot.Flameshot.desktop', 'simplescreenrecorder.desktop', 'cinnamon-settings.desktop']"
 

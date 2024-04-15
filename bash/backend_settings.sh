@@ -32,3 +32,15 @@ echo "vm.swappiness=10" | sudo tee -a /etc/sysctl.conf > /dev/null
 echo "fs.file-max = 2097152" | sudo tee -a /etc/sysctl.conf > /dev/null
 sudo timedatectl set-timezone America/New_York
 
+# Create the configuration file to disable Wi-Fi power saving.
+cat << EOF > /etc/NetworkManager/conf.d/wifi-powersave.conf
+[connection]
+wifi.powersave = 2
+EOF
+
+echo "Wi-Fi power saving has been disabled."
+
+# Restart network manager.
+systemctl restart NetworkManager
+echo "Network Manager restarted."
+
