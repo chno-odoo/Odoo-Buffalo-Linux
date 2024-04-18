@@ -65,17 +65,33 @@ fi
 # Install Spotify-client from the official repository.
 echo "Downloading Spotify signed GPG keys..."
 curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+if [ $? -ne 0 ]; then
+    echo "Failed to Download Spotify's singed GPG keys...">&2
+    exit 1
+fi
 
 echo "Adding Spotify Repository..."
 echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+if [ $? -ne 0 ]; then
+    echo "Failed to add the Spotify Repository...">&2
+    exit 1
+fi
 
 echo "Updating packages..."
 apt-get update
+if [ $? -ne 0 ]; then
+    echo "Packages were not able to be updated. Ensure you are connected to the internet or check your repository settings.">&2
+    exit 1
+fi
 
 echo "Installing Spotify..."
 apt-get install spotify-client -y
+if [ $? -ne 0 ]; then
+    echo "Failed to install the Spotify Client...">&2
+    exit 1
+fi
 
-gsettings.set.org.cinnamon favorite-apps "['keepassx.desktop', 'spotify.desktop', 'slimbookbattery.desktop']"
+gsettings.set.org.cinnamon favorite-apps "['keepassx.desktop', 'spotify.desktop']"
 
 
 
