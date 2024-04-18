@@ -42,7 +42,7 @@ fi
 
 # Install Slimbook Battery
 echo "Adding the Slimbook Battery repository..."
-sudo add-apt-repository ppa:slimbook/slimbook
+sudo add-apt-repository ppa:slimbook/slimbook -y
 if [ $? -ne 0 ]; then
     echo "Failed to add the repository...">&2
     exit 1
@@ -73,7 +73,7 @@ echo "Updating packages..."
 apt-get update
 
 echo "Installing Spotify..."
-apt-get install spotify-client
+apt-get install spotify-client -y
 
 gsettings.set.org.cinnamon favorite-apps "['keepassx.desktop', 'spotify.desktop', 'slimbookbattery.desktop']"
 
