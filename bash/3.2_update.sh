@@ -1,102 +1,57 @@
 #!/bin/bash
 
-# This script will be used to handle the updates that were made between Odoo Mint 2.0 and Odoo Mint 3.2.
+# This script handles updates between Odoo Mint 2.0 and Odoo Mint 3.2.
+# It installs Thunderbird, Keepassx, Slimbook Battery, and Spotify-Client.
 
-# Summary of changes:
-# Installed Thunderbird 
-# Installed Keepassx 
-# Installed Slimbook Battery
-# Installed Spotify-Client
-# Add Keepassx and Spotify-client to the favorite applications.
-
-
-# Ensure the script is running as root or with sudo privileges.
-if [ "$(id -u)" -ne 0 ]; then
-    echo "Script needs to be run as root or with sudo privileges."
+# Ensure the script is run as root or with sudo privileges.
+if ["$(id -u)" -ne 0 ]; then
+    echo "This script needs to be run as root or with sudo privileges."
     exit 1
 fi
 
-# Update package list.
-echo "Updating packages..."
-apt update
-if [ $? -ne 0 ]; then
-    echo "Packages were not able to be updated. Ensure you are connected to the internet or check your repository settings.">&2
-    exit 1
-fi
+# Function to handle the installation process.
+install_package () {
+    echo "Installing $1..."
+    apt install "$1" -y
+    if [ $? -ne 0 ]; then
+        echo "Failed to install $1...">&2
+        exit 1
+    fi
+}
 
-# Install Thunderbird
-echo "Installing Thunderbird..."
-apt install thunderbird -y
-if [ $? -ne 0 ]; then
-    echo "Failed to install Thunderbird...">&2
-    exit 1
-fi
+# Function to update packages.
+update_packages () {
+    echo "Updating packages..."
+    apt update
+    if [ $? -ne 0 ]; then
+        echo "Package update failed. Check your network connection or repository settings...">&2
+        exit 1
+    fi
+}
 
-# Install Keepassx
-echo "Installing Keepassx..."
-apt install keepassx -y
-if [ $? -ne 0 ]; then
-    echo "Failed to install Keepassx...">&2
-    exit 1
-fi
+update_packages
 
-# Install Slimbook Battery
-echo "Adding the Slimbook Battery repository..."
-sudo add-apt-repository ppa:slimbook/slimbook -y
-if [ $? -ne 0 ]; then
-    echo "Failed to add the repository...">&2
-    exit 1
-fi
+#Installation of applications
+install_package thunderbird
+install_package keepassx
 
-echo "Updating packages..."
-apt update
-if [ $? -ne 0 ]; then
-    echo "Packages were not able to be updated. Ensure you are connected to the internet or check your repository settings.">&2
-    exit 1
-fi
+# Add slimbook repository
+echo "Adding Slimbook repository..."
+add-apt-repository ppa:slimbook/slimbook -y
+update_packages
+install_package slimbookbattery
 
-echo "Installing Slimbook Battery..."
-apt install slimbookbattery -y
-if [ $? -ne 0 ]; then
-    echo "Failed to install Slimbook Battery..."
-    exit 1
-fi
-
-# Install Spotify-client from the official repository.
+# Add Spotify repository and install
 echo "Downloading Spotify signed GPG keys..."
-curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
 if [ $? -ne 0 ]; then
-    echo "Failed to Download Spotify's singed GPG keys...">&2
+    echo "Failed to download Spotify GPG keys..." >&2
     exit 1
 fi
 
-echo "Adding Spotify Repository..."
-echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-if [ $? -ne 0 ]; then
-    echo "Failed to add the Spotify Repository...">&2
-    exit 1
-fi
+echo "Adding Spotify repository..."
+echo "deb http://repository.spotify.com stable non-free" | tee /etc/apt/sources.list.d/spotify.list
+update_packages  # Update after adding Spotify repository
+install_package spotify-client
 
-echo "Updating packages..."
-apt-get update
-if [ $? -ne 0 ]; then
-    echo "Packages were not able to be updated. Ensure you are connected to the internet or check your repository settings.">&2
-    exit 1
-fi
-
-echo "Installing Spotify..."
-apt-get install spotify-client -y
-if [ $? -ne 0 ]; then
-    echo "Failed to install the Spotify Client...">&2
-    exit 1
-fi
-
-gsettings.set.org.cinnamon favorite-apps "['keepassx.desktop', 'spotify.desktop']"
-
-
-
-
-
-
-
-
+echo "All installations completed successfully."
