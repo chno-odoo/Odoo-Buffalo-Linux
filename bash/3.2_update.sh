@@ -4,7 +4,7 @@
 # It installs Thunderbird, Keepassx, Slimbook Battery, and Spotify-Client.
 
 # Ensure the script is run as root or with sudo privileges.
-if ["$(id -u)" -ne 0 ]; then
+if [ "$(id -u)" -ne 0 ]; then
     echo "This script needs to be run as root or with sudo privileges."
     exit 1
 fi
@@ -29,17 +29,30 @@ update_packages () {
     fi
 }
 
+is_installed () {
+    dpkg-query -W -f='${Status}' $1 2>/dev/null | grep -c "ok installed"
+}
+
 update_packages
 
 #Installation of applications
-install_package thunderbird
-install_package keepassx
+for pkg in thunderbird keepassx; do
+    if [ $(is_installed $pkg) -eq 0 ]; then
+        install_package $pkg
+    else
+        echo "$pkg is already installed, skipping..."
+    fi
+done
 
 # Add slimbook repository
 echo "Adding Slimbook repository..."
 add-apt-repository ppa:slimbook/slimbook -y
 update_packages
-install_package slimbookbattery
+if [ $(is_installed slimbookbattery) -eq 0 ]; then
+    install_package slimbookbattery
+else
+    echo "Slimbook Battery is already installed, skipping..."
+fi
 
 # Add Spotify repository and install
 echo "Downloading Spotify signed GPG keys..."
@@ -52,6 +65,10 @@ fi
 echo "Adding Spotify repository..."
 echo "deb http://repository.spotify.com stable non-free" | tee /etc/apt/sources.list.d/spotify.list
 update_packages  # Update after adding Spotify repository
-install_package spotify-client
+if [ $(is_installed spotify-client) -eq 0 ]; then
+    install_package spotify-client
+else
+    echo "Spotify Client is already installed, skipping..."
+fi
 
 echo "All installations completed successfully."
