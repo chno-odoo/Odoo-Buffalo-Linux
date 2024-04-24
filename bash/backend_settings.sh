@@ -11,9 +11,14 @@ fi
 # Add atera agent.
 (wget -O - "https://HelpdeskSupport1706554083638.servicedesk.atera.com/api/utils/AgentInstallScript/Linux/001Q3000006btKcIAI?customerId=7" | bash)
 
-# Set the swappiness value to improve hardware performance.
-sudo sysctl vm.swappiness=10
-echo "vm.swappiness=10" | sudo tee -a /etc/sysctl.conf > /dev/null
+echo "Adding Slimbook repository..."
+sudo add-apt-repository ppa:slimbook/slimbook -y
+
+echo "Updating packages..."
+sudo apt update
+
+echo "Installing Slimbook Battery..."
+sudo apt install slimbookbattery -y
 
 # Set the system limits and timezone.
 echo "fs.file-max = 2097152" | sudo tee -a /etc/sysctl.conf > /dev/null
