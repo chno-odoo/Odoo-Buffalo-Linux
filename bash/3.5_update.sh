@@ -10,7 +10,9 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 # Update packages.
+echo "Updating packages..."
 apt update
 
 # Install Diodon.
-apt install diodon
+echo "Installing Diodon..."
+apt install diodon -y
