@@ -37,7 +37,7 @@ is_installed () {
 update_packages
 
 #Installation of applications
-for pkg in thunderbird keepassx didon; do
+for pkg in thunderbird keepassx diodon; do
     if [ $(is_installed $pkg) -eq 0 ]; then
         install_package $pkg
     else
