@@ -6,7 +6,7 @@
 B=bluetuith
 V=1.0.9
 L=Linux_x86_64.tar.gz
-URL="https://github.com/darkhz/$B/releases/download/v$V/$B"_"$V"_"$L"
+URL="https://github.com/darkhz/bluetuith/releases/download/v0.2.2/bluetuith_0.2.2_Linux_x86_64.tar.gz"
 
 # Function to check if a command succeeded
 check_success() {
