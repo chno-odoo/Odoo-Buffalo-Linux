@@ -2,30 +2,51 @@
 
 # This script will be used to make the change from Blueman Bluetooth Manager to Bluetuith Bluetooth Manager.
 
-# Variables for Bluetuith.
+# Variables for Bluetuith
 B=bluetuith
 V=1.0.9
 L=Linux_x86_64.tar.gz
 URL="https://github.com/darkhz/$B/releases/download/v$V/$B"_"$V"_"$L"
 
-# Download and Install Bluetuith.
+# Function to check if a command succeeded
+check_success() {
+  if [ $? -ne 0 ]; then
+    echo "Error: $1"
+    exit 1
+  fi
+}
+
+# Download and Install Bluetuith
 echo "Downloading Bluetuith..."
 wget $URL -O "/tmp/$B.tar.gz"
+check_success "Downloading Bluetuith failed."
 
 echo "Installing Bluetuith..."
 sudo tar -xf "/tmp/$B.tar.gz" -C /usr/local/bin/
-sudo chmod +x /usr/local/bin/bluetuith
+check_success "Extracting Bluetuith failed."
 
-# Remove Blueman.
+sudo chmod +x /usr/local/bin/bluetuith
+check_success "Setting permissions for Bluetuith failed."
+
+# Verify Bluetuith installation
+if [ ! -f /usr/local/bin/bluetuith ]; then
+  echo "Error: Bluetuith installation failed."
+  exit 1
+fi
+
+# Remove Blueman
 echo "Removing Blueman..."
 sudo apt-get remove --purge -y blueman
-sudo apt-get autoremove -y
+check_success "Removing Blueman failed."
 
-# Create systemd service file for Bluetuith.
+sudo apt-get autoremove -y
+check_success "Autoremove failed."
+
+# Create systemd service file for Bluetuith
 echo "Creating systemd service file for Bluetuith..."
 sudo tee /etc/systemd/system/bluetuith.service > /dev/null <<EOF
 [Unit]
-Description=Bluetuith Bluetooth Manager 
+Description=Bluetuith Bluetooth Manager
 After=bluetooth.service
 Requires=bluetooth.service
 
@@ -36,18 +57,21 @@ Restart=always
 [Install]
 WantedBy=multi-user.target
 EOF
+check_success "Creating systemd service file failed."
 
-# Enable Bluetuith Service.
+# Enable Bluetuith Service
 echo "Enabling Bluetuith service..."
 sudo systemctl enable bluetuith.service
+check_success "Enabling Bluetuith service failed."
 
-# Disbale Blueman autostart. 
+# Disable Blueman autostart
 echo "Disabling Blueman autostart..."
 if [ -f /etc/xdg/autostart/blueman.desktop ]; then
-    sudo rm /etc/xdg/autostart/blueman.desktop
+  sudo rm /etc/xdg/autostart/blueman.desktop
+  check_success "Disabling Blueman autostart failed."
 fi
 
-# Add Bluetuith to autostart.
+# Add Bluetuith to autostart
 echo "Adding Bluetuith to autostart..."
 sudo tee /etc/xdg/autostart/bluetuith.desktop > /dev/null <<EOF
 [Desktop Entry]
@@ -56,12 +80,13 @@ Name=Bluetuith
 Exec=/usr/local/bin/bluetuith
 X-GNOME-Autostart-enabled=true
 EOF
+check_success "Adding Bluetuith to autostart failed."
 
-# Remove any residual Blueman files.
+# Remove any residual Blueman files
 echo "Cleaning up residual Blueman files..."
 sudo rm -rf /usr/lib/python3/dist-packages/blueman*
 sudo rm -rf /usr/share/blueman
 sudo rm -rf /etc/blueman
+check_success "Cleaning up residual Blueman files failed."
 
 echo "Replacement of Blueman with Bluetuith is complete. Please reboot your system."
-
