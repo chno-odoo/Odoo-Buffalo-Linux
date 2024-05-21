@@ -122,6 +122,7 @@ if [ $(is_installed crow-translate) -eq 0 ]; then
         exit 1
     fi
     sudo add-apt-repository "deb http://ppa.launchpadcontent.net/jonmagon/crow-translate/ubuntu jammy main"
+    update_packages
     install_package crow-translate
 else
     echo "Crow Translate is already installed, skipping..."
