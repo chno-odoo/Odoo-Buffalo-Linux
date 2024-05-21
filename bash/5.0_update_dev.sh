@@ -94,12 +94,12 @@ fi
 # Spotify repository and package.
 if [ $(is_installed spotify-client) -eq 0 ]; then
     echo "Adding Spotify repository..."
-    curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+    curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo tee /etc/apt/trusted.gpg.d/spotify.gpg > /dev/null
     if [ $? -ne 0 ]; then
         echo "Failed to download Spotify GPG keys..." >&2
         exit 1
     fi
-    echo "deb http://repository.spotify.com stable non-free" | tee /etc/apt/sources.list.d/spotify.list
+    echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
     update_packages
     install_package spotify-client
 else
@@ -116,11 +116,9 @@ fi
 # Crow Translate repository and package.
 if [ $(is_installed crow-translate) -eq 0 ]; then
     echo "Adding Crow Translate repository key..."
-    wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC2B0E8C0D58C0CED | sudo apt-key add -
-    echo "Updating package..."
-    update_packages
+    wget -qO- https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC2B0E8C0D58C0CED | sudo tee /etc/apt/trusted.gpg.d/crow-translate.gpg > /dev/null
     if [ $? -ne 0 ]; then
-        echo "Failed to add Crow Translate GPG key and update packages..." >&2
+        echo "Failed to add Crow Translate GPG key..." >&2
         exit 1
     fi
     add_repository "ppa:jonmagon/crow-translate"
