@@ -115,6 +115,12 @@ fi
 
 # Crow Translate repository and package.
 if [ $(is_installed crow-translate) -eq 0 ]; then
+    echo "Adding Crow Translate repository key..."
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C2B0E8C0D58C0CED
+    if [ $? -ne 0 ]; then
+        echo "Failed to add Crow Translate GPG key..." >&2
+        exit 1
+    fi
     add_repository "ppa:jonmagon/crow-translate"
     install_package crow-translate
 else
