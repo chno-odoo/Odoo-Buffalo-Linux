@@ -121,7 +121,7 @@ if [ $(is_installed crow-translate) -eq 0 ]; then
         echo "Failed to add Crow Translate GPG key..." >&2
         exit 1
     fi
-    add_repository "ppa:jonmagon/crow-translate"
+    sudo add-apt-repository "deb http://ppa.launchpadcontent.net/jonmagon/crow-translate/ubuntu jammy main"
     install_package crow-translate
 else
     echo "Crow Translate is already installed, skipping..."
