@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# This script handles updates between Odoo Mint 3.0 and Odoo Mint 4.0
+# This script handles updates between Odoo Mint 3.0 and Odoo Mint 5.0
 
-# Installing Thunderbird, Keepassx, Slimbook, Spotify, and Diodon GTK+ Clipboard Manager.
+# Installing Thunderbird, Keepassx, Slimbook, Spotify, Diodon GTK+ Clipboard Manager, Obsidian, CPU-X, Crow Translate, .
 
 # Ensure the script is run as root or with sudo privileges.
 if [ "$(id -u)" -ne 0 ]; then
@@ -37,7 +37,7 @@ is_installed () {
 update_packages
 
 #Installation of applications
-for pkg in thunderbird keepassx diodon; do
+for pkg in thunderbird keepassx diodon  cpu-x; do
     if [ $(is_installed $pkg) -eq 0 ]; then
         install_package $pkg
     else
@@ -71,6 +71,28 @@ if [ $(is_installed spotify-client) -eq 0 ]; then
 else
     echo "Spotify Client is already installed, skipping..."
 fi
+
+# Download Obsidian Deb file.
+echo "Download Obsidian Deb file..."
+wget https://github.com/obsidianmd/obsidian-releases/releases/download/v1.5.12/obsidian_1.5.12_amd64.deb
+
+# Install the package.
+dpkg -i obsidian_1.5.12_amd64.deb
+apt-get install -f
+
+# Download and Install Crow Translate. 
+
+# Add the Crow Translate PPA.
+echo "Adding the Crow Translate PPA..."
+add-apt-repository ppa:jonmagon/crow-translate
+
+echo "Updating packages..."
+update_packages
+
+echo "Installing Crow Translate..."
+apt install crow-translate
+
+
 
 echo "All installations completed successfully."
 
