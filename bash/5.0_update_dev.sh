@@ -94,7 +94,7 @@ fi
 # Spotify repository and package.
 if [ $(is_installed spotify-client) -eq 0 ]; then
     echo "Adding Spotify repository..."
-    curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo tee /etc/apt/trusted.gpg.d/spotify.gpg > /dev/null
+    curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/spotify-archive-keyring.gpg
     if [ $? -ne 0 ]; then
         echo "Failed to download Spotify GPG keys..." >&2
         exit 1
@@ -116,11 +116,12 @@ fi
 # Crow Translate repository and package.
 if [ $(is_installed crow-translate) -eq 0 ]; then
     echo "Adding Crow Translate repository key..."
-    wget -qO- https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC2B0E8C0D58C0CED | sudo tee /etc/apt/trusted.gpg.d/crow-translate.gpg > /dev/null
+    wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC2B0E8C0D58C0CED | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/crow-translate-archive-keyring.gpg
     if [ $? -ne 0 ]; then
         echo "Failed to add Crow Translate GPG key..." >&2
         exit 1
     fi
+    echo "Adding Crow Translate repository..."
     sudo add-apt-repository "deb http://ppa.launchpadcontent.net/jonmagon/crow-translate/ubuntu jammy main"
     update_packages
     install_package crow-translate
