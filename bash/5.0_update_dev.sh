@@ -94,7 +94,7 @@ fi
 # Spotify repository and package.
 if [ $(is_installed spotify-client) -eq 0 ]; then
     echo "Adding Spotify repository..."
-    curl -sS https://download.spotify.com/debian/pubkey_7A3A762FAFD4A51F.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+    curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
     if [ $? -ne 0 ]; then
         echo "Failed to download and add Spotify GPG key..." >&2
         exit 1
