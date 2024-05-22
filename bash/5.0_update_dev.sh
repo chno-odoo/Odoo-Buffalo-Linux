@@ -94,10 +94,9 @@ fi
 # Spotify repository and package.
 if [ $(is_installed spotify-client) -eq 0 ]; then
     echo "Adding Spotify repository..."
-    curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo tee /etc/apt/trusted.gpg.d/spotify-archive-keyring.gpg > /dev/null
-    sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/spotify-archive-keyring.gpg
+    curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/spotify-archive-keyring.gpg > /dev/null
     if [ $? -ne 0 ]; then
-        echo "Failed to download Spotify GPG keys..." >&2
+        echo "Failed to download and add Spotify GPG key..." >&2
         exit 1
     fi
     echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
@@ -117,8 +116,7 @@ fi
 # Crow Translate repository and package.
 if [ $(is_installed crow-translate) -eq 0 ]; then
     echo "Adding Crow Translate repository key..."
-    wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC2B0E8C0D58C0CED | sudo tee /etc/apt/trusted.gpg.d/crow-translate-archive-keyring.gpg > /dev/null
-    sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/crow-translate-archive-keyring.gpg
+    wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC2B0E8C0D58C0CED | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/crow-translate-archive-keyring.gpg > /dev/null
     if [ $? -ne 0 ]; then
         echo "Failed to add Crow Translate GPG key..." >&2
         exit 1
