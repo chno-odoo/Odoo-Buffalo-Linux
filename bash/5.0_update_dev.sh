@@ -45,11 +45,17 @@ is_installed () {
     dpkg-query -W -f='${Status}' "$1" 2>/dev/null | grep -c "ok installed"
 }
 
-# Function to add a repository and update packages.
+# Function to add a repository and update packages with retry mechanism.
 add_repository () {
-    echo "Adding repository: $1"
-    add-apt-repository "$1" -y
-    update_packages
+    local repo=$1
+    echo "Adding repository: $repo"
+    for i in {1..3}; do
+        add-apt-repository "$repo" -y && update_packages && return 0
+        echo "Attempt $i to add repository $repo failed. Retrying..."
+        sleep 2
+    done
+    echo "Failed to add repository $repo after 3 attempts." >&2
+    exit 1
 }
 
 # Function to download and install a deb file.
