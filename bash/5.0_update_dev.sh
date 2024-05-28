@@ -99,6 +99,7 @@ done
 # Slimbook repository and package.
 if [ $(is_installed slimbookbattery) -eq 0 ]; then
     add_repository "ppa:slimbook/slimbook"
+    update_packages
     install_package slimbookbattery
 else
     echo "Slimbook Battery is already installed, skipping..."
