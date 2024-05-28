@@ -10,7 +10,8 @@
 # Install Diodon Clipboard Manager
 # Install Obsidian
 # Install CPU-X
-# Install Crow Translate 
+# Install App Image Launcher
+# Install DeepL App Image
 
 # Ensure the script is run with root or with sudo privileges.
 if [ "$(id -u)" -ne 0 ]; then
@@ -20,10 +21,11 @@ fi
 
 # Function to handle the installation process.
 install_package () {
-    echo "Installing $1..."
-    apt install "$1" -y
+    local package=$1
+    echo "Installing $package..."
+    apt install "$package" -y
     if [ $? -ne 0 ]; then
-        echo "Failed to install $1..." >&2
+        echo "Failed to install $package..." >&2
         exit 1
     fi
 }
@@ -31,25 +33,19 @@ install_package () {
 # Function to update packages.
 update_packages () {
     echo "Updating packages..."
-    apt update
+    apt update && apt upgrade -y
     if [ $? -ne 0 ]; then
-        echo "Package update failed. Check your network connection or repository settings..." >&2
-        exit 1
-    fi
-    
-    apt upgrade -y
-    if [ $? -ne 0 ]; then
-        echo "Package upgrade failed..." >&2
+        echo "Package update/upgrade failed. Check your network connection or repository settings..." >&2
         exit 1
     fi
 }
 
 # Function to check if a package is installed.
 is_installed () {
-    dpkg-query -W -f='${Status}' $1 2>/dev/null | grep -c "ok installed"
+    dpkg-query -W -f='${Status}' "$1" 2>/dev/null | grep -c "ok installed"
 }
 
-# Function to add a repository.
+# Function to add a repository and update packages.
 add_repository () {
     echo "Adding repository: $1"
     add-apt-repository "$1" -y
@@ -58,10 +54,11 @@ add_repository () {
 
 # Function to download and install a deb file.
 install_deb () {
-    echo "Downloading $1..."
-    wget -q "$1" -O /tmp/temp_package.deb
+    local url=$1
+    echo "Downloading from $url..."
+    wget -q "$url" -O /tmp/temp_package.deb
     if [ $? -ne 0 ]; then
-        echo "Failed to download $1..." >&2
+        echo "Failed to download $url..." >&2
         exit 1
     fi
 
@@ -70,11 +67,21 @@ install_deb () {
     apt-get install -f -y
 }
 
+# Function to handle AppImage downloads.
+install_appimage () {
+    local url=$1
+    local filename=$(basename "$url")
+    echo "Downloading $filename..."
+    wget -q "$url" -O "$filename"
+    chmod +x "$filename"
+    echo "$filename downloaded and made executable."
+}
+
 # Update and upgrade existing packages.
 update_packages
 
 # Installation of common packages.
-packages=(thunderbird keepassx diodon cpu-x)
+packages=(thunderbird keepassx diodon cpu-x software-properties-common)
 for pkg in "${packages[@]}"; do
     if [ $(is_installed $pkg) -eq 0 ]; then
         install_package $pkg
@@ -95,10 +102,6 @@ fi
 if [ $(is_installed spotify-client) -eq 0 ]; then
     echo "Adding Spotify repository..."
     curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
-    if [ $? -ne 0 ]; then
-        echo "Failed to download and add Spotify GPG key..." >&2
-        exit 1
-    fi
     echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
     update_packages
     install_package spotify-client
@@ -112,5 +115,16 @@ if [ $(is_installed obsidian) -eq 0 ]; then
 else
     echo "Obsidian is already installed, skipping..."
 fi
+
+# App Image Launcher 
+if [ $(is_installed appimagelauncher) -eq 0 ]; then
+    add_repository "ppa:appimagelauncher-team/stable"
+    install_package appimagelauncher
+else
+    echo "AppImageLauncher is already installed, skipping..."
+fi
+
+# DeepL AppImage Download
+install_appimage "https://github.com/kumakichi/Deepl-linux-electron/releases/download/v1.4.3/Deepl-Linux-Electron-1.4.3.AppImage"
 
 echo "All installations completed successfully."
