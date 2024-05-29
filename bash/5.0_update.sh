@@ -1,21 +1,31 @@
 #!/bin/bash
 
-# This script handles updates between Odoo Mint 3.0 and Odoo Mint 5.0
+# This script handles updates and installations for updates made between version 3.0 and 5.2 of Odoo Mint.
 
-# Installing Thunderbird, Keepassx, Slimbook, Spotify, Diodon GTK+ Clipboard Manager, Obsidian, CPU-X, Crow Translate, .
+# Changes made:
+# Install Thunderbird
+# Install Keepassx
+# Install Slimbook Battery
+# Install Spotify
+# Install Diodon Clipboard Manager
+# Install Obsidian
+# Install CPU-X
+# Install App Image Launcher
+# Install DeepL App Image
 
-# Ensure the script is run as root or with sudo privileges.
+# Ensure the script is run with root or with sudo privileges.
 if [ "$(id -u)" -ne 0 ]; then
-    echo "This script needs to be run as root or with sudo privileges."
+    echo "This script needs to be run as root or with sudo privileges..."
     exit 1
 fi
 
 # Function to handle the installation process.
 install_package () {
-    echo "Installing $1..."
-    apt install "$1" -y
+    local package=$1
+    echo "Installing $package..."
+    apt install "$package" -y
     if [ $? -ne 0 ]; then
-        echo "Failed to install $1...">&2
+        echo "Failed to install $package..." >&2
         exit 1
     fi
 }
@@ -23,21 +33,62 @@ install_package () {
 # Function to update packages.
 update_packages () {
     echo "Updating packages..."
-    apt update
+    apt update && apt upgrade -y
     if [ $? -ne 0 ]; then
-        echo "Package update failed. Check your network connection or repository settings...">&2
+        echo "Package update/upgrade failed. Check your network connection or repository settings..." >&2
         exit 1
     fi
 }
 
+# Function to check if a package is installed.
 is_installed () {
-    dpkg-query -W -f='${Status}' $1 2>/dev/null | grep -c "ok installed"
+    dpkg-query -W -f='${Status}' "$1" 2>/dev/null | grep -c "ok installed"
 }
 
+# Function to add a repository and update packages with retry mechanism.
+add_repository () {
+    local repo=$1
+    echo "Adding repository: $repo"
+    for i in {1..3}; do
+        add-apt-repository "$repo" -y && update_packages && return 0
+        echo "Attempt $i to add repository $repo failed. Retrying..."
+        sleep 2
+    done
+    echo "Failed to add repository $repo after 3 attempts." >&2
+    exit 1
+}
+
+# Function to download and install a deb file.
+install_deb () {
+    local url=$1
+    echo "Downloading from $url..."
+    wget -q "$url" -O /tmp/temp_package.deb
+    if [ $? -ne 0 ]; then
+        echo "Failed to download $url..." >&2
+        exit 1
+    fi
+
+    echo "Installing downloaded package..."
+    dpkg -i /tmp/temp_package.deb
+    apt-get install -f -y
+}
+
+# Function to handle AppImage downloads.
+install_appimage () {
+    local url=$1
+    local filename=$(basename "$url")
+    echo "Downloading $filename..."
+    wget -q "$url" -O "$filename"
+    chmod +x "$filename"
+    echo "$filename downloaded and made executable."
+}
+
+# Update and upgrade existing packages.
 update_packages
 
-#Installation of applications
-for pkg in thunderbird keepassx diodon  cpu-x; do
+# Installation of common packages.
+packages=(thunderbird keepassx diodon cpu-x software-properties-common)
+for pkg in "${packages[@]}"; do
     if [ $(is_installed $pkg) -eq 0 ]; then
         install_package $pkg
     else
@@ -45,56 +96,42 @@ for pkg in thunderbird keepassx diodon  cpu-x; do
     fi
 done
 
-# Add slimbook repository
-echo "Adding Slimbook repository..."
-add-apt-repository ppa:slimbook/slimbook -y
-update_packages
+# Slimbook repository and package.
 if [ $(is_installed slimbookbattery) -eq 0 ]; then
+    add_repository "ppa:slimbook/slimbook"
+    update_packages
     install_package slimbookbattery
 else
     echo "Slimbook Battery is already installed, skipping..."
 fi
 
-# Add Spotify repository and install
-echo "Downloading Spotify signed GPG keys..."
-curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
-if [ $? -ne 0 ]; then
-    echo "Failed to download Spotify GPG keys..." >&2
-    exit 1
-fi
-
-echo "Adding Spotify repository..."
-echo "deb http://repository.spotify.com stable non-free" | tee /etc/apt/sources.list.d/spotify.list
-update_packages  # Update after adding Spotify repository
+# Spotify repository and package.
 if [ $(is_installed spotify-client) -eq 0 ]; then
+    echo "Adding Spotify repository..."
+    curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+    echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+    update_packages
     install_package spotify-client
 else
     echo "Spotify Client is already installed, skipping..."
 fi
 
-# Download Obsidian Deb file.
-echo "Download Obsidian Deb file..."
-wget https://github.com/obsidianmd/obsidian-releases/releases/download/v1.5.12/obsidian_1.5.12_amd64.deb
+# Obsidian Installation
+if [ $(is_installed obsidian) -eq 0 ]; then
+    install_deb "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.5.12/obsidian_1.5.12_amd64.deb"
+else
+    echo "Obsidian is already installed, skipping..."
+fi
 
-# Install the package.
-dpkg -i obsidian_1.5.12_amd64.deb
-apt-get install -f
+# App Image Launcher 
+if [ $(is_installed appimagelauncher) -eq 0 ]; then
+    add_repository "ppa:appimagelauncher-team/stable"
+    install_package appimagelauncher
+else
+    echo "AppImageLauncher is already installed, skipping..."
+fi
 
-# Download and Install Crow Translate. 
-
-# Add the Crow Translate PPA.
-echo "Adding the Crow Translate PPA..."
-add-apt-repository ppa:jonmagon/crow-translate
-
-echo "Updating packages..."
-update_packages
-
-echo "Installing Crow Translate..."
-apt install crow-translate
-
-
+# DeepL AppImage Download
+install_appimage "https://github.com/kumakichi/Deepl-linux-electron/releases/download/v1.4.3/Deepl-Linux-Electron-1.4.3.AppImage"
 
 echo "All installations completed successfully."
-
-
-
