@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script handles updates and installations for updates made between version 3.0 and 5.2 of Odoo Mint.
+# This script handles updates and installations for updates made between version 3.0 and 5.4 of Odoo Mint.
 
 # Changes made:
 # Install Thunderbird
