@@ -7,8 +7,8 @@ TMP_DIR=$(mktemp -d)
 cd "$TMP_DIR"
 
 # Variable assignment for URLs.
-GUI_SCRIPT_URL="https://raw.githubusercontent.com/chno-odoo/Odoo-Buffalo-Linux/2.0/bash/gui_settings.sh"
-BACKEND_SETTINGS_URL="https://raw.githubusercontent.com/chno-odoo/Odoo-Buffalo-Linux/2.0/bash/backend_settings.sh"
+GUI_SCRIPT_URL="https://raw.githubusercontent.com/chno-odoo/Odoo-Buffalo-Linux/3.2/bash/gui_settings.sh"
+BACKEND_SETTINGS_URL="https://raw.githubusercontent.com/chno-odoo/Odoo-Buffalo-Linux/3.2/bash/backend_settings.sh"
 
 # Function to download and execute a script.
 execute_script() {
